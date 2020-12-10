@@ -1,6 +1,6 @@
 """This file contain the class of PriorityQueue which is specially designed for data system."""
 
-from typing import Any, List, Tuple
+from typing import Any, List, Tuple, Optional
 import datetime
 
 
@@ -36,7 +36,7 @@ class PriorityQueue:
                 if item[0] == date:
                     index = self._items.index(item)
                     dequeued = self._items.pop(index)
-                    
+
         return dequeued
 
     def enqueue(self, priority: datetime.date, item: float) -> None:
@@ -49,6 +49,28 @@ class PriorityQueue:
             i = i + 1
 
         self._items.insert(i, (priority, item))
+
+    def access_data(self, date: datetime.date) -> Optional[float, None]:
+        """Return the data corresponding to the given date."""
+        for item in self._items:
+            if item[0] == date:
+                return item[1]
+            else:
+                return None
+
+    def get_list(self) -> list:
+        """Return the list that containing the wanted data."""
+        # ACCUMULATOR:
+        list_so_far = []
+
+        for item in self._items:
+            list_so_far.append(item[1])
+
+        return list_so_far
+
+    def get_queue(self) -> List[Tuple]:
+        """Return a priority queue with tuple(date, float)"""
+        return self._items
 
 
 class EmptyPriorityQueueError(Exception):
