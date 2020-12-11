@@ -47,7 +47,7 @@ class Temperature:
             mean_every_month = []
             for month in range(1, 13):
                 month_data = self.mean[datetime.date(year, month, 1)]
-                mean_every_month += sum(month_data) / len(month_data)
+                mean_every_month.append(sum(month_data) / len(month_data))
             mean_every_year.append(sum(mean_every_month) / 12)
 
         return mean_every_year
