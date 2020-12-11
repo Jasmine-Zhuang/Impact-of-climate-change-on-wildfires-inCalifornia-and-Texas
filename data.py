@@ -40,39 +40,33 @@ class Temperature:
                 self.max[date].append(float(data[max_title][i]))
                 self.min[date].append(float(data[min_title][i]))
 
-    def mean_years(self, begin: int, end: int) -> List[float]:
-        """Return a list of every year's average temperature from the year of begin to the year of end."""
-        mean_every_year = []
+    def mean_months(self, begin: int, end: int) -> List[float]:
+        """Return a list of every month's average temperature from the year of begin to the year of end."""
+        mean_every_month = []
         for year in range(begin, end + 1):
-            mean_every_month = []
             for month in range(1, 13):
                 month_data = self.mean[datetime.date(year, month, 1)]
                 mean_every_month.append(sum(month_data) / len(month_data))
-                mean_every_year.append(sum(mean_every_month) / 12)
 
-        return mean_every_year
+        return mean_every_month
 
-    def max_years(self, begin: int, end: int) -> List[float]:
-        """Return a list of every year's highest temperature from the year of begin to the year of end."""
-        max_every_year = []
+    def max_months(self, begin: int, end: int) -> List[float]:
+        """Return a list of every month's highest temperature from the year of begin to the year of end."""
+        max_every_month = []
         for year in range(begin, end + 1):
-            data_of_year = []
             for month in range(1, 13):
-                data_of_year += self.max[datetime.date(year, month, 1)]
-            max_every_year.append(max(data_of_year))
+                max_every_month.append(max(self.max[datetime.date(year, month, 1)]))
 
-        return max_every_year
+        return max_every_month
 
-    def min_years(self, begin: int, end: int) -> List[float]:
-        """Return a list of every year's lowest temperature from the year of begin to the year of end."""
-        min_every_year = []
+    def min_months(self, begin: int, end: int) -> List[float]:
+        """Return a list of every month's lowest temperature from the year of begin to the year of end."""
+        min_every_month = []
         for year in range(begin, end + 1):
-            data_of_year = []
             for month in range(1, 13):
-                data_of_year += self.min[datetime.date(year, month, 1)]
-            min_every_year.append(min(data_of_year))
+                min_every_month.append(max(self.min[datetime.date(year, month, 1)]))
 
-        return min_every_year
+        return min_every_month
 
 
 class Precipitation:
@@ -100,17 +94,17 @@ class Precipitation:
             else:
                 self.total[date].append(float(data[prcp_title][i]))
 
-    def total_year(self, begin: int, end: int) -> List[float]:
-        """Return a list of every year's total precipitation from the year of begin to the year of end."""
-        total_every_year = []
+    def total_months(self, begin: int, end: int) -> List[float]:
+        """Return a list of every month's total precipitation from the year of begin to the year of end, which is the
+        average of all stations.
+        """
+        total_every_month = []
         for year in range(begin, end + 1):
-            mean_every_month = []
             for month in range(1, 13):
                 month_data = self.total[datetime.date(year, month, 1)]
-                mean_every_month += sum(month_data) / len(month_data)
-            total_every_year.append(sum(mean_every_month))
+                total_every_month.append(sum(month_data) / len(month_data))
 
-        return total_every_year
+        return total_every_month
 
 
 class Wildfire:
@@ -125,7 +119,7 @@ class Wildfire:
     name: str
     occurs: Dict[datetime.date, List[float]]
 
-    def __init__(self, name: str, file: str, name_title: str, date_title: str, size_title: str) -> None:
+    def __init__(self, name: str, file: str, name_title: str, year_title: str, day_title: str, size_title: str) -> None:
         """Initialize a new wildfire data for a state."""
         self.name = name
         self.occurs = {}
@@ -133,29 +127,33 @@ class Wildfire:
         length = len(data)
         for i in range(length):
             if data[name_title][i] == name:
-                date = datetime.date(int(data[date_title][i]), 1, 1)
+                year = int(data[year_title][i])
+                month = int(int(data[day_title][i]) / 31) + 1
+                date = datetime.date(year, month, 1)
                 if date not in self.occurs:
                     self.occurs[date] = [float(data[size_title][i])]
                 else:
                     self.occurs[date].append(float(data[size_title][i]))
 
-    def frequency_years(self, begin: int, end: int) -> List[int]:
-        """Return a list of every year's frequency of wildfire from the year of begin to the year of end.
+    def frequency_months(self, begin: int, end: int) -> List[int]:
+        """Return a list of every month's frequency of wildfire from the year of begin to the year of end.
         The frequency is represented by the number of wildfire.
         """
         frequency_so_far = []
         for year in range(begin, end + 1):
-            date = datetime.date(year, 1, 1)
-            frequency_so_far.append(len(self.occurs[date]))
+            for month in range(1, 13):
+                date = datetime.date(year, month, 1)
+                frequency_so_far.append(len(self.occurs[date]))
         return frequency_so_far
 
-    def total_size_years(self, begin: int, end: int) -> List[float]:
-        """Return a list of every year's total size of wildfire from the year of begin to the year of end."""
-        total_size_so_far = []
+    def mean_size_months(self, begin: int, end: int) -> List[float]:
+        """Return a list of every month's average size of wildfire from the year of begin to the year of end."""
+        mean_size_so_far = []
         for year in range(begin, end + 1):
-            date = datetime.date(year, 1, 1)
-            total_size_so_far.append(sum(self.occurs[date]))
-        return total_size_so_far
+            for month in range(1, 13):
+                date = datetime.date(year, month, 1)
+                mean_size_so_far.append(sum(self.occurs[date]) / len(self.occurs[date]))
+        return mean_size_so_far
 
 
 @dataclass
