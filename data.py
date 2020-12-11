@@ -2,6 +2,7 @@
 import pandas as pd
 import datetime
 from typing import Dict, List
+from dataclasses import dataclass
 
 
 class Temperature:
@@ -156,6 +157,7 @@ class Wildfire:
         return total_size_so_far
 
 
+@dataclass
 class State:
     """A state that is researched.
 
@@ -166,8 +168,8 @@ class State:
       - wildfire_data: the wildfire data of the state
     """
     name: str
-    temp_data: Temperature
-    prcp_data: Dict[int, float]
-    wildfire_data: Wildfire
+    temp: Temperature
+    prcp: Precipitation
+    wildfire: Wildfire
 
     
