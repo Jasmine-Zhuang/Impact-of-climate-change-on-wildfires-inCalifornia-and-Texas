@@ -31,14 +31,15 @@ class Temperature:
         length = len(data)
         for i in range(length):
             date = datetime.datetime.strptime(data[date_title][i], '%Y-%m').date()
-            if date not in self.mean:
-                self.mean[date] = [float(data[mean_title][i])]
-                self.max[date] = [float(data[max_title][i])]
-                self.min[date] = [float(data[min_title][i])]
-            else:
-                self.mean[date].append(float(data[mean_title][i]))
-                self.max[date].append(float(data[max_title][i]))
-                self.min[date].append(float(data[min_title][i]))
+            if float(data[mean_title][i]) > 0:
+                if date not in self.mean:
+                    self.mean[date] = [float(data[mean_title][i])]
+                    self.max[date] = [float(data[max_title][i])]
+                    self.min[date] = [float(data[min_title][i])]
+                else:
+                    self.mean[date].append(float(data[mean_title][i]))
+                    self.max[date].append(float(data[max_title][i]))
+                    self.min[date].append(float(data[min_title][i]))
 
     def mean_months(self, begin: int, end: int) -> List[float]:
         """Return a list of every month's average temperature from the year of begin to the year of end."""
@@ -89,10 +90,11 @@ class Precipitation:
         length = len(data)
         for i in range(length):
             date = datetime.datetime.strptime(data[date_title][i], '%Y-%m').date()
-            if date not in self.total:
-                self.total[date] = [float(data[prcp_title][i])]
-            else:
-                self.total[date].append(float(data[prcp_title][i]))
+            if float(data[prcp_title][i]) >= 0:
+                if date not in self.total:
+                    self.total[date] = [float(data[prcp_title][i])]
+                else:
+                    self.total[date].append(float(data[prcp_title][i]))
 
     def total_months(self, begin: int, end: int) -> List[float]:
         """Return a list of every month's total precipitation from the year of begin to the year of end, which is the
